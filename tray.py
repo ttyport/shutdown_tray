@@ -4,7 +4,7 @@
 import os
 import sys
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction, QStyleFactory
+from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction
 
 
 class Tray(QSystemTrayIcon):
@@ -24,14 +24,38 @@ class Tray(QSystemTrayIcon):
         exit = QAction("Exit", self)
         exit.triggered.connect(sys.exit)
 
+        suspend = QAction("Suspend", self)
+        suspend.triggered.connect(suspend_func)
+
+        reboot = QAction("Reboot", self)
+        reboot.triggered.connect(reboot_func)
+
+        lock = QAction("Lock", self)
+        lock.triggered.connect(lock_func)
+
         menu.addAction(shutdown)
+        menu.addAction(suspend)
+        menu.addAction(reboot)
+        menu.addAction(lock)
         menu.addAction(exit)
 
         self.setContextMenu(menu)
 
 
 def shutdown_func():
-    os.system("sudo shutdown now")
+    os.system("sudo systemctl shutdown")
+
+
+def suspend_func():
+    os.system("sudo systemctl suspend")
+
+
+def reboot_func():
+    os.system("sudo systemctl reboot")
+
+
+def lock_func():
+    os.system("i3lock -c 000000")
 
 
 if __name__ == '__main__':
